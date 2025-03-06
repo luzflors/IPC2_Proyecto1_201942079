@@ -25,7 +25,6 @@ class Lista_proteina():
 
     def insertar_inicio(self, proteina, estado):
         nuevo = Nodo(proteina, estado)
-
         if self.primero is None:
             self.primero = nuevo
         else:
