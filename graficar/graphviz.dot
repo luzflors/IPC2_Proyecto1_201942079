@@ -1,0 +1,76 @@
+digraph G {
+    rankdir = LR;
+	labelloc=t;
+    node [shape = plaintext, color="#b8b0b0b8", width=3, height=2;];
+    //creando nodo
+    estado [label = <
+    
+        <TABLE BORDER="0" CELLBORDER="0" >
+            <TR><TD></TD><TD>
+
+            <TABLE BORDER="0" CELLSPACING="0" >
+                <TR><TD>1</TD><TD>2</TD><TD>3</TD><TD>4</TD></TR>
+            </TABLE>
+            </TD></TR><TR><TD>
+            
+            <TABLE BORDER="0" CELLSPACING="5"  >
+                <TR><TD>1</TD></TR>
+                <TR><TD>2</TD></TR>
+                <TR><TD>3</TD></TR>
+                <TR><TD>4</TD></TR>
+            </TABLE>
+            
+            </TD><TD>
+
+            <TABLE  BORDER="0" CELLSPACING="0" >
+                
+                <TR><TD>
+                <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" >
+                    <TR><TD>KAV</TD><TD>KAV</TD><TD>KAV</TD><TD>KAV</TD></TR>
+                </TABLE>
+                </TD></TR>
+                
+                <TR><TD>
+                <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7">
+                    <TR>
+                    <TD>D</TD>
+                    <TD>D</TD>
+                    <TD>D</TD>
+                    <TD>D</TD>
+                    </TR>
+                
+                </TABLE>
+                </TD></TR>
+                
+                <TR><TD>
+                <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7">
+                    <TR>
+                    <TD>D</TD>
+                    <TD>D</TD>
+                    <TD>D</TD>
+                    <TD>D</TD>
+                    </TR>
+
+                </TABLE>
+                </TD></TR>
+                
+                <TR><TD>
+                <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7">
+                
+                    <TR>
+                    <TD>D</TD>
+                    <TD>D</TD>
+                    <TD>D</TD>
+                    <TD>D</TD>
+                    </TR>
+
+                </TABLE>
+            </TD></TR>
+
+            </TABLE>
+
+            </TD></TR>
+        
+        </TABLE>>;];
+    label="Estado 1"
+}
