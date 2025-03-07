@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
-import subprocess as ET
+import subprocess
 
-class Nodo():
+class NodoProteina():
     def __init__(self, proteina, es_inerte):
         self._proteina = proteina
         self._es_inerte = es_inerte
@@ -17,14 +17,14 @@ class Nodo():
         self._es_inerte = estado
     
     def mostrar(self):
-        print(f"{self.get_proteina()}")
+        print(self.get_proteina())
         
-class Lista_proteina():
+class ListaProteina():
     def __init__(self):
         self.primero = None
 
     def insertar(self, proteina, estado):
-        nuevo = Nodo(proteina, estado)
+        nuevo = NodoProteina(proteina, estado)
         if self.primero is None:
             self.primero = nuevo
         else:
@@ -33,36 +33,7 @@ class Lista_proteina():
                 tmp = tmp.siguiente
             tmp.siguiente = nuevo
     
-    def buscar(self, proteina):
-        tmp = self.primero
-        while tmp:
-            if tmp.get_proteina() == proteina:
-                return tmp
-            tmp = tmp.siguiente
-        return None
-    
-    def eliminar(self, proteina):
-        if self.primero is None:
-            print('No existen proteinas')
-        elif self.primero.get_proteina() == proteina:
-            tmp = self.primero
-            self.primero = tmp.siguiente
-            tmp.siguiente = None
-            print('Proteina eliminada correctamente')
-        else:
-            prev = self.primero
-            tmp = self.primero.siguiente
-            while tmp:
-                if tmp.get_proteina() == proteina:
-                    prev.siguiente = tmp.siguiente
-                    tmp.siguiente = None
-                    print('Proteina eliminada correctamente')
-                    return
-                prev = tmp
-                tmp = tmp.siguiente
-            print('Error al eliminar, la proteina no existe')
-    
-    def mostrar_lista(self):
+    def mostrar_proteinas(self):
         tmp = self.primero
         while tmp:
             tmp.mostrar()
@@ -75,15 +46,104 @@ class Lista_proteina():
                 return tmp
             tmp = tmp.siguiente
         return None
+    
+    def limpiar(self):
+        while self.primero is not None:
+            tmp = self.primero  
+            self.primero = self.primero.siguiente  
+            tmp.siguiente = None 
+
+class NodoParejas():
+    def __init__(self, parejas):
+        self._parejas = parejas
+        self.siguiente = None
+
+class ListaParejas:
+    def __init__(self):
+        self.primero = None  
+
+    def insertar(self, nombre, pareja):
+        nuevo = NodoParejas(nombre, pareja)
+        if self.primero is None:
+            self.primero = nuevo
+        else:
+            tmp = self.primero
+            while tmp.siguiente is not None:
+                tmp = tmp.siguiente
+            tmp.siguiente = nuevo
+
+    def limpiar(self):
+        while self.primero is not None:
+            tmp = self.primero  
+            self.primero = self.primero.siguiente  
+            tmp.siguiente = None 
+
+
+class NodoExperimento():
+    def __init__(self, nombre, filas, columnas, rejilla, pareja):
+        self._nombre = nombre 
+        self._filas = int(filas)
+        self._columnas = int(columnas)
+        self._rejilla = rejilla 
+        self._pareja = pareja 
+        self.siguiente = None 
+
+    def get_nombre(self):
+        return self._nombre if self._nombre is not None else 'Experimento'
+    
+    def get_rejilla(self):
+        return self._rejilla if self._rejilla is not None else ""
+
+    def get_pareja(self):
+        return self._pareja if self._pareja is not None else ""
+
+    def get_columnas(self):
+        return int(self._columnas) if self._columnas is not None else 0
+    
+    def get_filas(self):
+        return int(self._filas) if self._filas is not None else 0
+    
+    def set_nombre(self, nombre):
+        self._nombre = nombre
+
+    def set_filas(self, filas):
+        self._filas = int(filas)
+
+    def set_columnas(self, columnas):
+        self._columnas = int(columnas)
+
+    def set_rejilla(self, rejilla):
+        self._rejilla = rejilla
+
+    def set_pareja(self, pareja):
+        self._pareja = pareja
+
+
+class ListaExperimento:
+    def __init__(self):
+        self.primero = None  
+
+    def insertar(self, nombre, filas, columnas, rejilla, pareja):
+        nuevo = NodoExperimento(nombre, filas, columnas, rejilla, pareja)
+        if self.primero is None:
+            self.primero = nuevo
+        else:
+            tmp = self.primero
+            while tmp.siguiente is not None:
+                tmp = tmp.siguiente
+            tmp.siguiente = nuevo
+    
+    def limpiar(self):
+        while self.primero is not None:
+            tmp = self.primero  
+            self.primero = self.primero.siguiente  
+            tmp.siguiente = None 
 
 class ExperimentoXML():
     def __init__(self, archivo):
         self._archivo = archivo
-        self._rejilla_txt = None
-        self._pareja_txt = None
-        self._columnas_txt = None
-        self._filas_txt = None
-        self._nombre_exp = None
+        self._experimentos = ListaExperimento()
+        self._parejas = ListaParejas()
     
     def _cargar_xml(self):
         try:
@@ -95,64 +155,34 @@ class ExperimentoXML():
     
     def extraer_xml(self):
         xml_raiz = self._cargar_xml()
+        if xml_raiz is None:
+            return
+        
         for experimento in xml_raiz.findall('experimento'):
-            self._nombre_exp = experimento.get('nombre')
-            if self._nombre_exp is None:
-                self._nombre_exp = 'Experimento'
+            nombre = experimento.get('nombre', 'Experimento')
+
+            rejilla = ""
+            filas = 0
+            columnas = 0
+            pareja_texto = ""
+            
             tejido = experimento.find('tejido')
             if tejido is not None:
-                self._rejilla_txt = tejido.find('rejilla').text
-                self._filas_txt = tejido.get('filas')
-                self._columnas_txt = tejido.get('columnas')
+                rejilla = tejido.find('rejilla').text if tejido.find('rejilla') is not None else ""
+                filas = int(tejido.get('filas', 0) or 0)  
+                columnas = int(tejido.get('columnas', 0) or 0) 
+            
             proteina = experimento.find('proteinas')
             if proteina is not None:
-                pareja = proteina.find('pareja')
-                self._pareja_txt = pareja.text
-    
-    def get_nombre(self):
-        if self._nombre_exp is not None:
-            self._nombre_exp = 'Experimento'
-        return self._nombre_exp
-        
-    
-    def get_rejilla(self):
-        return self._rejilla_txt
+                for parejas in proteina.findall('pareja'):
+                    pareja_texto = parejas.text
+                    if pareja_texto:  
+                        self._parejas.insertar(nombre, pareja_texto)
+            
+            self._experimentos.insertar(nombre, filas, columnas, rejilla, self._parejas)
 
-    
-    def get_pareja(self):
-        return self._pareja_txt
-    
-    def get_columnas(self):
-        if self._columnas_txt is not None:
-            return int(self._columnas_txt)
-        else:
-            return 0
-    
-    def get_filas(self):
-        if self._filas_txt is not None:
-            return int(self._filas_txt)
-        else:
-            return 0
-    
-    def set_nombre(self, nombre):
-        self._nombre_exp = nombre
-        
-    
-    def set_rejilla(self, rejilla):
-        self._rejilla_txt = rejilla
-
-    
-    def set_pareja(self, pareja):
-        self._pareja_txt = pareja
-    
-    def set_columnas(self, columnas):
-        self._columnas_txt = columnas
-    
-    def set_filas(self, filas):
-        self._filas_txt = filas
-    
-    def generar_rejilla(self, nombre_archivo, lista, estado):
-        with open(f'{nombre_archivo}.dot', 'w', encoding='utf-8') as file:
+    def generar_rejilla(self, archivo, lista_proteinas, filas, columnas, estado):
+        with open(f'{archivo}.dot', 'w', encoding='utf-8') as file:
             file.write('digraph G {\n')
             file.write('\trankdir = LR;\n')
             file.write(f'\tlabel="Estados {estado}"\n')
@@ -162,25 +192,25 @@ class ExperimentoXML():
             file.write('\t\t<TABLE BORDER="0" CELLBORDER="0">\n')
             
             file.write('\t\t\t<TR><TD></TD>')
-            for j in range(1, self._columnas_txt + 1):
+            for j in range(1, columnas + 1):
                 file.write(f'<TD BORDER="0">{j}</TD>')
             file.write('</TR>\n')
-            
+
             index = 0
-            for i in range(1, self._filas_txt + 1):
+            for i in range(1, filas + 1):
                 file.write('\t\t\t<TR>\n')
                 file.write(f'\t\t\t\t<TD BORDER="0" CELLPADDING="15">{i}</TD>\n')
-                for j in range(self._columnas_txt):
-                    if index < len(lista):
-                        protein = lista[index]
+                for j in range(columnas):
+                    if index < len(lista_proteinas):
+                        proteina = lista_proteinas[index]
                         index += 1
-                        file.write(f'\t\t\t\t<TD>{protein}</TD>\n')
+                        
+                        file.write(f'\t\t\t\t<TD>{proteina}</TD>\n')
                     else:
                         file.write('\t\t\t\t<TD></TD>\n')
                 file.write('\t\t\t</TR>\n')
-            
+
             file.write('\t\t</TABLE>>];\n')
             file.write('}\n')
-        
-        import subprocess
-        subprocess.run(f"dot -Tsvg {nombre_archivo}.dot -o {nombre_archivo}.svg", shell=True)
+
+        subprocess.run(f"dot -Tsvg {archivo}.dot -o {archivo}.svg", shell=True)
