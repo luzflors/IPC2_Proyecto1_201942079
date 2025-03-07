@@ -2,19 +2,19 @@ import xml.etree.ElementTree as ET
 import subprocess as ET
 
 class Nodo():
-    def __init__(self, proteina, estado):
+    def __init__(self, proteina, es_inerte):
         self._proteina = proteina
-        self._estado = estado
+        self._es_inerte = es_inerte
         self.siguiente = None
 
     def get_proteina(self):
         return self._proteina
 
     def get_estado(self):
-        return self._estado
+        return self._es_inerte
     
     def set_estado(self, estado):
-        self._estado = estado
+        self._es_inerte = estado
     
     def mostrar(self):
         print(f"{self.get_proteina()}")
@@ -23,15 +23,7 @@ class Lista_proteina():
     def __init__(self):
         self.primero = None
 
-    def insertar_inicio(self, proteina, estado):
-        nuevo = Nodo(proteina, estado)
-        if self.primero is None:
-            self.primero = nuevo
-        else:
-            nuevo.siguiente = self.primero
-            self.primero = nuevo
-
-    def insertar_final(self, proteina, estado):
+    def insertar(self, proteina, estado):
         nuevo = Nodo(proteina, estado)
         if self.primero is None:
             self.primero = nuevo
@@ -141,6 +133,23 @@ class ExperimentoXML():
             return int(self._filas_txt)
         else:
             return 0
+    
+    def set_nombre(self, nombre):
+        self._nombre_exp = nombre
+        
+    
+    def set_rejilla(self, rejilla):
+        self._rejilla_txt = rejilla
+
+    
+    def set_pareja(self, pareja):
+        self._pareja_txt = pareja
+    
+    def set_columnas(self, columnas):
+        self._columnas_txt = columnas
+    
+    def set_filas(self, filas):
+        self._filas_txt = filas
     
     def generar_rejilla(self, nombre_archivo, lista, estado):
         with open(f'{nombre_archivo}.dot', 'w', encoding='utf-8') as file:
