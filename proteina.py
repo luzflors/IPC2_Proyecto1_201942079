@@ -74,37 +74,48 @@ class ListaProteina():
         self.primero = primera_fila
 
     def buscar_parejas(self, proteina01, proteina02):
-        encontrado = False
         fila_actual = self.primero
-        
+
         while fila_actual is not None:
             nodo_actual = fila_actual
-            while nodo_actual is not None:
-                
-                if nodo_actual.get_es_inerte():
-                    nodo_actual = nodo_actual.siguiente
-                    continue
-                
-                if nodo_actual.siguiente is not None and not nodo_actual.siguiente.get_es_inerte():
-                    if (nodo_actual.get_proteina() == proteina01 and
-                        nodo_actual.siguiente.get_proteina() == proteina02):
-                        nodo_actual._es_inerte = True
-                        nodo_actual.siguiente._es_inerte = True
-                        print("Encontro pareja")
-                        encontrado = True
-                        
-                if nodo_actual.abajo is not None and not nodo_actual.abajo.get_es_inerte():
-                    if (nodo_actual.get_proteina() == proteina01 and
-                        nodo_actual.abajo.get_proteina() == proteina02):
-                        nodo_actual._es_inerte = True
-                        nodo_actual.abajo._es_inerte = True
-                        print("Encontro pareja")
-                        encontrado = True  
-                        
-                nodo_actual = nodo_actual.siguiente
-            fila_actual = fila_actual.abajo
 
-        return encontrado
+            while nodo_actual is not None:
+                while nodo_actual is not None and nodo_actual.get_es_inerte():
+                    nodo_actual = nodo_actual.siguiente
+                
+                if nodo_actual is None:
+                    break  
+
+                nodo_siguiente = nodo_actual.siguiente
+                while nodo_siguiente is not None and nodo_siguiente.get_es_inerte():
+                    nodo_siguiente = nodo_siguiente.siguiente
+
+                if nodo_siguiente is not None:
+                    if (nodo_actual.get_proteina() == proteina01 and nodo_siguiente.get_proteina() == proteina02) or \
+                    (nodo_actual.get_proteina() == proteina02 and nodo_siguiente.get_proteina() == proteina01):
+                        nodo_actual._es_inerte = True
+                        nodo_siguiente._es_inerte = True
+                        print("Encontró pareja")
+                        return True
+
+                nodo_abajo = nodo_actual.abajo
+                while nodo_abajo is not None and nodo_abajo.get_es_inerte():
+                    nodo_abajo = nodo_abajo.abajo
+
+                if nodo_abajo is not None:
+                    if (nodo_actual.get_proteina() == proteina01 and nodo_abajo.get_proteina() == proteina02) or \
+                    (nodo_actual.get_proteina() == proteina02 and nodo_abajo.get_proteina() == proteina01):
+                        nodo_actual._es_inerte = True
+                        nodo_abajo._es_inerte = True
+                        print("Encontró pareja")
+                        return True
+
+                nodo_actual = nodo_actual.siguiente  
+
+            fila_actual = fila_actual.abajo 
+
+        return False
+
 
 
     def buscar(self, nombre):

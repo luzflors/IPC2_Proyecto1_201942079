@@ -3,8 +3,6 @@ import os
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
-
-
 class Experimento():
     def __init__(self):
         self._lista_experimento = ListaExperimento()
@@ -137,6 +135,7 @@ class Experimento():
             self._desarrollo_catalogo()
             return
         elif opcion == 3:
+            self._iniciar_sistema()
             print("\nRegresando...")
 
     def _desarrollo_manual(self):  # Listo
@@ -296,10 +295,10 @@ class Experimento():
         self._experimento_xml._generar_rejilla(f"{nombre}", lista_proteinas.primero, filas, columnas, "Inicial")
         
         parejas = exp.get_pareja()
-
+        
         while True:
             encontro_alguna = False
-            for pareja in parejas.split(","):
+            for pareja in  parejas.split(","):
                 proteina01, proteina02 = pareja.split()
                 if lista_proteinas.buscar_parejas(proteina01, proteina02):
                     encontro_alguna = True
@@ -324,6 +323,10 @@ class Experimento():
 
         self._experimento_xml._generar_rejilla(f"{nombre}", lista_proteinas.primero, filas, columnas, 1) 
 
+        parejas = exp.get_pareja()
+        index = 1
+        encontre = False
+        
         parejas = exp.get_pareja()
         index = 1
         
