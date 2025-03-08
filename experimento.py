@@ -423,8 +423,9 @@ class Experimento():
         print("| Curso: Introducción a la Programación y Computación 2      |")
         print("| Carrera: Ingeniería en Sistemas                            |")
         print("| Semestre: 4to                                              |")
-        print("| Documentación: https://github.com/proyecto-experimentos    |")
         print("==============================================================\n")
+
+        print("Documentación: https://github.com/luzflors/IPC2_Proyecto1_201942079.git")
         while True:    
             opcion = input("Presione Enter para regresar al menú... ").strip()
             if opcion == "":
