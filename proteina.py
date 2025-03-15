@@ -117,7 +117,6 @@ class ListaProteina():
         return False
 
 
-
     def buscar(self, nombre):
         tmp = self.primero 
         while tmp:
@@ -133,12 +132,13 @@ class ListaProteina():
             tmp.siguiente = None
 
 class NodoExperimento():
-    def __init__(self, nombre, filas, columnas, rejilla, pareja):
+    def __init__(self, nombre, filas, columnas, rejilla, pareja, iteracion):
         self._nombre = nombre 
         self._filas = int(filas)
         self._columnas = int(columnas)
         self._rejilla = rejilla 
-        self._pareja = pareja    
+        self._pareja = pareja
+        self.__iteracion = int(iteracion)    
         self.siguiente = None 
 
     def get_nombre(self):
@@ -156,6 +156,9 @@ class NodoExperimento():
     def get_filas(self):
         return int(self._filas) if self._filas is not None else 0
     
+    def get_iteracion(self):
+        return int(self.__iteracion) if self.__iteracion is not None else 0
+
     def mostrar(self):
         print(f"  Nombre: {self.get_nombre()}")
         print(f"  Filas: {self.get_filas()}")
@@ -163,6 +166,7 @@ class NodoExperimento():
         print("  Rejilla:")
         print(self.get_rejilla())
         print(f"  Pareja(s): {self.get_pareja()}")
+        print(f" Iteracion: {self.get_iteracion}")
         
     
 class ListaExperimento:
@@ -170,7 +174,17 @@ class ListaExperimento:
         self.primero = None  
 
     def insertar(self, nombre, filas, columnas, rejilla, pareja):
-        nuevo = NodoExperimento(nombre, filas, columnas, rejilla, pareja)
+        nuevo = NodoExperimento(nombre, filas, columnas, rejilla, pareja, 0)
+        if self.primero is None:
+            self.primero = nuevo
+        else:
+            tmp = self.primero
+            while tmp.siguiente is not None:
+                tmp = tmp.siguiente
+            tmp.siguiente = nuevo
+    
+    def insertar(self, nombre, filas, columnas, rejilla, pareja, iteracion):
+        nuevo = NodoExperimento(nombre, filas, columnas, rejilla, pareja, iteracion)
         if self.primero is None:
             self.primero = nuevo
         else:
@@ -229,7 +243,8 @@ class ExperimentoXML():
             rejilla = ""
             filas = 0
             columnas = 0
-            
+            iteracion = int(experimento.find('limite').text)
+
             tejido = experimento.find('tejido')
             if tejido is not None:
                 rejilla = tejido.find('rejilla').text if tejido.find('rejilla') is not None else ""
@@ -247,8 +262,10 @@ class ExperimentoXML():
                             parejas += ", " 
                         parejas += pareja_texto
                         primera_pareja = False
-        
-            self._experimentos.insertar(nombre, filas, columnas, rejilla, parejas)
+
+            
+
+            self._experimentos.insertar(nombre, filas, columnas, rejilla, parejas, iteracion)
 
     
     def _generar_rejilla(self, archivo, raiz, filas, columnas, estado):

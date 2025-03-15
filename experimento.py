@@ -316,11 +316,11 @@ class Experimento():
         if not exp:
             print("Experimento no encontrado.")
             return
-
+        
         lista_proteinas = self._ingresar_proteinas(nombre)
         filas = exp.get_filas()
         columnas = exp.get_columnas()
-
+        iteraciones = exp.get_iteracion()
         self._experimento_xml._generar_rejilla(f"{nombre}", lista_proteinas.primero, filas, columnas, 1) 
 
         parejas = exp.get_pareja()
@@ -329,7 +329,7 @@ class Experimento():
         
         parejas = exp.get_pareja()
         index = 1
-        
+
         while True:
             encontro_alguna = False
             for pareja in  parejas.split(","):
@@ -337,7 +337,13 @@ class Experimento():
                 if lista_proteinas.buscar_parejas(proteina01, proteina02):
                     encontro_alguna = True
                     index += 1
-                    self._experimento_xml._generar_rejilla(f"{nombre}", lista_proteinas.primero, filas, columnas, index)
+                    if iteraciones == 0:
+                        self._experimento_xml._generar_rejilla(f"{nombre}", lista_proteinas.primero, filas, columnas, index)
+                    else:
+                        for i in range(iteraciones):
+                            self._experimento_xml._generar_rejilla(f"{nombre}", lista_proteinas.primero, filas, columnas, index)
+                        encontro_alguna = False
+                        
             if not encontro_alguna:
                 break
 
